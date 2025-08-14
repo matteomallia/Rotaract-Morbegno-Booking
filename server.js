@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
     secure: false, // true per 465, false per altre porte
     auth: {
         user: "matteo.mallia@salesianitreviglio.it", // La tua email
-        pass: "Az-48975" // La tua password o password per app
+        pass: "ryeg xghq fxwn tnlr" // La tua password o password per app
     }
 });
 
