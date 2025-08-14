@@ -2,19 +2,18 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 document.addEventListener('DOMContentLoaded', async () => {
     const dashboardContent = document.getElementById('dashboard-content');
-
-    // --- SOSTITUISCI QUESTI VALORI CON LE TUE CHIAVI REALI DI SUPABASE ---
+    
+    // Ora i tuoi dati sono inseriti direttamente qui
     const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
     const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
-    // ------------------------------------------------------------------
-
+    
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     try {
         const { data: bookings, error } = await supabase
             .from('bookings')
             .select('*')
-            .order('created_at', { ascending: false }); // Ordina per data/ora di iscrizione
+            .order('created_at', { ascending: false });
 
         if (error) {
             throw error;
