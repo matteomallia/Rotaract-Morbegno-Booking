@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
-const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,8 +13,10 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Middleware per servire i file statici dalla cartella 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware per leggere il JSON dal body delle richieste POST
-app.use(express.json());
+// Endpoint per servire la pagina principale
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Endpoint per ottenere la disponibilità delle stanze
 app.get('/api/availability', async (req, res) => {
@@ -41,7 +42,6 @@ app.post('/api/book', async (req, res) => {
     const { roomType, name, email, club, occupants, winePackage } = req.body;
 
     try {
-        // Leggi la disponibilità corrente
         const { data: availability, error: readError } = await supabase
             .from('availability')
             .select('*')
@@ -52,7 +52,6 @@ app.post('/api/book', async (req, res) => {
         }
 
         if (availability[roomType] > 0) {
-            // Decrementa la disponibilità
             const newAvailability = { ...availability, [roomType]: availability[roomType] - 1 };
             const { error: updateError } = await supabase
                 .from('availability')
@@ -63,7 +62,6 @@ app.post('/api/book', async (req, res) => {
                 throw updateError;
             }
 
-            // Salva i dati della prenotazione
             const { error: bookingError } = await supabase
                 .from('bookings')
                 .insert([{ roomType, name, email, club, occupants, winePackage }]);
