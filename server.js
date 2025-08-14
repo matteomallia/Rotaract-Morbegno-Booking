@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,9 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Middleware per servire i file statici dalla cartella 'public'
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Middleware per leggere il JSON dal body delle richieste POST
+app.use(express.json());
 
 // Endpoint per servire la pagina principale
 app.get('/', (req, res) => {
