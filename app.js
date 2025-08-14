@@ -13,23 +13,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateAvailability = (availability) => {
         for (const room in availability) {
+            const roomElement = document.getElementById(room);
+            const button = roomButtons[room];
+            const availabilityText = roomElement.querySelector('p');
+            
             if (availability[room] <= 0) {
-                const roomElement = document.getElementById(room);
-                const button = roomButtons[room];
-                
-                // Disabilita il pulsante
                 button.disabled = true;
                 button.textContent = 'Esaurito';
                 button.style.backgroundColor = '#ccc';
-
-                // Aggiunge un messaggio di esaurito
-                const availabilityText = roomElement.querySelector('p');
                 availabilityText.textContent = 'Esaurito';
                 availabilityText.style.color = '#d9534f';
+            } else {
+                availabilityText.textContent = `${availability[room]} post${availability[room] === 1 ? 'o' : 'i'} disponibile${availability[room] === 1 ? '' : 'i'}`;
+                button.disabled = false;
+                button.textContent = 'Prenota ora';
+                button.style.backgroundColor = '#f7a81c';
+                availabilityText.style.color = '#333';
             }
         }
     };
 
+    // Funzione per reindirizzare l'utente al form
+    const redirectToBooking = (roomType) => {
+        window.location.href = `booking.html?room=${roomType}`;
+    };
+
+    // Aggiunge un ascoltatore di eventi per ogni pulsante
+    for (const room in roomButtons) {
+        roomButtons[room].addEventListener('click', () => {
+            redirectToBooking(room);
+        });
+    }
+
+    // Carica la disponibilità iniziale all'avvio della pagina
     fetch('/api/availability')
         .then(response => response.json())
         .then(data => {
