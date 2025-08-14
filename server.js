@@ -43,7 +43,8 @@ app.get('/api/availability', async (req, res) => {
 
 // Endpoint per gestire la prenotazione
 app.post('/api/book', async (req, res) => {
-    const { roomType, name, email, club, occupants, winePackage } = req.body;
+    // Aggiornamento delle variabili in ingresso
+    const { roomType, name, email, phone, district, club, role, occupants } = req.body;
 
     try {
         const { data: availability, error: readError } = await supabase
@@ -66,9 +67,10 @@ app.post('/api/book', async (req, res) => {
                 throw updateError;
             }
 
+            // Inserimento delle nuove variabili nel database
             const { error: bookingError } = await supabase
                 .from('bookings')
-                .insert([{ roomType, name, email, club, occupants, winePackage }]);
+                .insert([{ roomType, name, email, phone, district, club, role, occupants }]);
 
             if (bookingError) {
                 throw bookingError;
