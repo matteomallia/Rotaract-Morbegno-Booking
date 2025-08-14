@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1200px; /* Aumentato il container per lo stile orizzontale */
     margin: 20px auto;
     padding: 20px;
     background-color: #fff;
@@ -36,6 +36,47 @@ body {
 .header p {
     margin: 5px 0 0;
     font-size: 1.1em;
+}
+
+/* Stile per il container della disponibilità (nuovo stile orizzontale) */
+#availability-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Spazio tra gli elementi */
+    justify-content: center; /* Centra gli elementi orizzontalmente */
+}
+
+.room {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    width: 250px; /* Larghezza fissa per ogni elemento */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.room:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.room.sold-out {
+    opacity: 0.6;
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.room h3 {
+    color: #003366;
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
+.room p {
+    color: #666;
+    font-size: 1em;
 }
 
 /* Stile per i moduli e gli elementi di prenotazione */
@@ -142,4 +183,12 @@ body {
 .summary-container .warning {
     color: #dc3545;
     font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #003366;
+    color: #fff;
+    margin-top: auto;
 }
