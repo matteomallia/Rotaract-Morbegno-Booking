@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulo di Prenotazione - Rotaract 2042</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .submit-button {
+            background-color: #f7a81c;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .submit-button:hover {
+            background-color: #e5970c;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Prenotazione Stanza</h1>
+        <p>Completa il modulo per confermare la tua prenotazione.</p>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <form id="booking-form">
+                <input type="hidden" id="room-type" name="room-type">
+                
+                <div class="form-group">
+                    <label for="name">Nome e Cognome del Prenotante:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Indirizzo Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="club">Club di Appartenenza:</label>
+                    <input type="text" id="club" name="club" required>
+                </div>
+                
+                <div class="form-group" id="other-occupants-group" style="display:none;">
+                    <label for="occupants">Nomi degli altri occupanti (separati da virgola):</label>
+                    <input type="text" id="occupants" name="occupants">
+                </div>
+                
+                <div class="form-group">
+                    <label for="wine-package">Pacchetto Vino:</label>
+                    <select id="wine-package" name="wine-package" required>
+                        <option value="">Seleziona un'opzione</option>
+                        <option value="pacchetto-1">Pacchetto 1 (es. 1 bottiglia)</option>
+                        <option value="pacchetto-2">Pacchetto 2 (es. 2 bottiglie)</option>
+                        <option value="nessuno">Nessun pacchetto</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-button">Conferma Prenotazione</button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>
