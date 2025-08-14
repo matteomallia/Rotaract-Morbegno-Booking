@@ -1,57 +1,55 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const singleRoomButton = document.getElementById('single-room').querySelector('.book-button');
-    const doubleRoomButton = document.getElementById('double-room').querySelector('.book-button');
-    const tripleRoomButton = document.getElementById('triple-room').querySelector('.book-button');
-    const quadrupleRoomButton = document.getElementById('quadruple-room').querySelector('.book-button');
+document.addEventListener('DOMContentLoaded', async () => {
+    const availabilityContainer = document.getElementById('availability-container');
 
-    const roomButtons = {
-        'single-room': singleRoomButton,
-        'double-room': doubleRoomButton,
-        'triple-room': tripleRoomButton,
-        'quadruple-room': quadrupleRoomButton,
-    };
-
-    const updateAvailability = (availability) => {
-        for (const room in availability) {
-            const roomElement = document.getElementById(room);
-            const button = roomButtons[room];
-            const availabilityText = roomElement.querySelector('p');
-            
-            if (availability[room] <= 0) {
-                button.disabled = true;
-                button.textContent = 'Esaurito';
-                button.style.backgroundColor = '#ccc';
-                availabilityText.textContent = 'Esaurito';
-                availabilityText.style.color = '#d9534f';
-            } else {
-                availabilityText.textContent = `${availability[room]} post${availability[room] === 1 ? 'o' : 'i'} disponibile${availability[room] === 1 ? '' : 'i'}`;
-                button.disabled = false;
-                button.textContent = 'Prenota ora';
-                button.style.backgroundColor = '#f7a81c';
-                availabilityText.style.color = '#333';
-            }
+    try {
+        const response = await fetch('/api/availability');
+        if (!response.ok) {
+            throw new Error('Errore nella risposta del server');
         }
-    };
+        const availability = await response.json();
 
-    // Funzione per reindirizzare l'utente al form
-    const redirectToBooking = (roomType) => {
-        window.location.href = `booking.html?room=${roomType}`;
-    };
+        // Aggiungo il titolo della sezione
+        const title = document.createElement('h2');
+        title.textContent = 'Disponibilità Stanze';
+        availabilityContainer.appendChild(title);
 
-    // Aggiunge un ascoltatore di eventi per ogni pulsante
-    for (const room in roomButtons) {
-        roomButtons[room].addEventListener('click', () => {
-            redirectToBooking(room);
+        const rooms = [
+            { type: 'single-room', name: 'Stanza Singola' },
+            { type: 'double-room', name: 'Stanza Doppia' },
+            { type: 'triple-room', name: 'Stanza Tripla' },
+            { type: 'quadruple-room', name: 'Stanza Quadrupla' }
+        ];
+
+        rooms.forEach(room => {
+            const count = availability[room.type] || 0;
+            const roomDiv = document.createElement('div');
+            roomDiv.classList.add('room');
+
+            const roomTitle = document.createElement('h3');
+            roomTitle.textContent = room.name;
+            roomDiv.appendChild(roomTitle);
+
+            const status = document.createElement('p');
+            if (count > 0) {
+                status.textContent = `${count} ${count === 1 ? 'posto' : 'stanze'} disponibile`;
+                const button = document.createElement('button');
+                button.textContent = 'Prenota ora';
+                button.classList.add('btn');
+                button.addEventListener('click', () => {
+                    window.location.href = `booking.html?room=${room.type}`;
+                });
+                roomDiv.appendChild(button);
+            } else {
+                status.textContent = 'Esaurito';
+                roomDiv.classList.add('sold-out');
+            }
+            roomDiv.appendChild(status);
+
+            availabilityContainer.appendChild(roomDiv);
         });
+
+    } catch (error) {
+        console.error('Errore nel caricamento della disponibilità:', error);
+        availabilityContainer.innerHTML = '<p class="error">Si è verificato un errore nel caricamento della disponibilità delle stanze. Riprova più tardi.</p>';
     }
-
-    // Carica la disponibilità iniziale all'avvio della pagina
-    fetch('/api/availability')
-        .then(response => response.json())
-        .then(data => {
-            updateAvailability(data);
-        })
-        .catch(error => {
-            console.error('Errore nel recupero della disponibilità:', error);
-        });
 });
