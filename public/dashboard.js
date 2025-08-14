@@ -1,0 +1,68 @@
+document.addEventListener('DOMContentLoaded', async () => {
+    const dashboardContent = document.getElementById('dashboard-content');
+    
+    // Configurazione di Supabase (usa le tue chiavi anonime)
+    const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2ihIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    try {
+        const { data: bookings, error } = await supabase
+            .from('bookings')
+            .select('*')
+            .order('created_at', { ascending: false }); // Ordina per data/ora di iscrizione
+
+        if (error) {
+            throw error;
+        }
+
+        if (bookings.length > 0) {
+            let tableHTML = `
+                <table id="bookings-list">
+                    <thead>
+                        <tr>
+                            <th>Data Iscrizione</th>
+                            <th>Nome e Cognome</th>
+                            <th>Email</th>
+                            <th>Telefono</th>
+                            <th>Distretto</th>
+                            <th>Club</th>
+                            <th>Ruolo</th>
+                            <th>Stanza</th>
+                            <th>Occupanti</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            bookings.forEach(booking => {
+                const bookingDate = new Date(booking.created_at).toLocaleString('it-IT');
+                tableHTML += `
+                    <tr>
+                        <td>${bookingDate}</td>
+                        <td>${booking.name}</td>
+                        <td>${booking.email}</td>
+                        <td>${booking.phone || 'N/A'}</td>
+                        <td>${booking.district || 'N/A'}</td>
+                        <td>${booking.club}</td>
+                        <td>${booking.role || 'N/A'}</td>
+                        <td>${booking.roomType}</td>
+                        <td>${booking.occupants || 'Nessuno'}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            dashboardContent.innerHTML = tableHTML;
+        } else {
+            dashboardContent.innerHTML = '<p>Nessuna prenotazione trovata.</p>';
+        }
+
+    } catch (err) {
+        console.error('Errore nel caricamento delle prenotazioni:', err);
+        dashboardContent.innerHTML = '<p>Si è verificato un errore nel caricamento dei dati.</p>';
+    }
+});
