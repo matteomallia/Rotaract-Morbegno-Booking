@@ -88,7 +88,7 @@ app.post('/api/book', async (req, res) => {
 
             // Invio dell'email di conferma
             const mailOptions = {
-                from: '"Il tuo Nome" <tua_email@example.com>', // La tua email
+                from: '"Distretto Rotaract 2042" <tua_email@example.com>', // La tua email
                 to: email, // L'email del prenotante
                 subject: 'Conferma di Prenotazione: Morbegno tra le Montagne',
                 html: `
