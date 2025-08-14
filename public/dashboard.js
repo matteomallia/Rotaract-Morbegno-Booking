@@ -1,3 +1,5 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+
 document.addEventListener('DOMContentLoaded', async () => {
     const dashboardContent = document.getElementById('dashboard-content');
     
