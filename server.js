@@ -8,8 +8,10 @@ const PORT = process.env.PORT || 3000;
 // Middleware per servire i file statici
 app.use(express.static(path.join(__dirname, '')));
 
-// Middleware per leggere il JSON dal body delle richieste POST
-app.use(express.json());
+// Endpoint per servire la pagina principale
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Endpoint per ottenere la disponibilità delle stanze
 app.get('/api/availability', (req, res) => {
