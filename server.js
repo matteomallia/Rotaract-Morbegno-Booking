@@ -14,12 +14,12 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Configurazione Nodemailer (da aggiornare con i tuoi dati)
 const transporter = nodemailer.createTransport({
-    host: "smtp.example.com", // Es: smtp.gmail.com per Gmail
+    host: "smtp.gmail.com", // Es: smtp.gmail.com per Gmail
     port: 587,
     secure: false, // true per 465, false per altre porte
     auth: {
-        user: "tua_email@example.com", // La tua email
-        pass: "tua_password" // La tua password o password per app
+        user: "matteo.mallia@salesianitreviglio.it", // La tua email
+        pass: "Az-48975" // La tua password o password per app
     }
 });
 
