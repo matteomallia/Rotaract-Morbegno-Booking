@@ -1,73 +1,85 @@
 const express = require('express');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configurazione di Supabase
+const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 // Middleware per servire i file statici dalla cartella 'public'
-// (dovrai creare una cartella 'public' e metterci dentro i tuoi file html, css, js)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware per leggere il JSON dal body delle richieste POST
 app.use(express.json());
 
 // Endpoint per ottenere la disponibilità delle stanze
-app.get('/api/availability', (req, res) => {
-    fs.readFile('database.json', 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).send('Errore nella lettura del database.');
+app.get('/api/availability', async (req, res) => {
+    try {
+        const { data: availability, error } = await supabase
+            .from('availability')
+            .select('*')
+            .single();
+
+        if (error) {
+            throw error;
         }
-        res.json(JSON.parse(data));
-    });
+
+        res.json(availability);
+    } catch (err) {
+        console.error('Errore nella lettura della disponibilità:', err);
+        res.status(500).send('Errore nella lettura della disponibilità.');
+    }
 });
 
 // Endpoint per gestire la prenotazione
-app.post('/api/book', (req, res) => {
+app.post('/api/book', async (req, res) => {
     const { roomType, name, email, club, occupants, winePackage } = req.body;
 
-    fs.readFile('database.json', 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Errore nella lettura del database.' });
+    try {
+        // Leggi la disponibilità corrente
+        const { data: availability, error: readError } = await supabase
+            .from('availability')
+            .select('*')
+            .single();
+
+        if (readError) {
+            throw readError;
         }
 
-        const availability = JSON.parse(data);
-
         if (availability[roomType] > 0) {
-            availability[roomType]--;
+            // Decrementa la disponibilità
+            const newAvailability = { ...availability, [roomType]: availability[roomType] - 1 };
+            const { error: updateError } = await supabase
+                .from('availability')
+                .update(newAvailability)
+                .eq('id', availability.id);
 
-            fs.writeFile('database.json', JSON.stringify(availability, null, 2), (err) => {
-                if (err) {
-                    return res.status(500).json({ success: false, message: 'Errore nell\'aggiornamento del database.' });
-                }
+            if (updateError) {
+                throw updateError;
+            }
 
-                const newBooking = {
-                    roomType,
-                    name,
-                    email,
-                    club,
-                    occupants,
-                    winePackage,
-                    timestamp: new Date().toISOString()
-                };
+            // Salva i dati della prenotazione
+            const { error: bookingError } = await supabase
+                .from('bookings')
+                .insert([{ roomType, name, email, club, occupants, winePackage }]);
 
-                fs.readFile('bookings.json', 'utf8', (err, bookingsData) => {
-                    const bookings = err ? [] : JSON.parse(bookingsData);
-                    bookings.push(newBooking);
+            if (bookingError) {
+                throw bookingError;
+            }
 
-                    fs.writeFile('bookings.json', JSON.stringify(bookings, null, 2), (err) => {
-                        if (err) {
-                            return res.status(500).json({ success: false, message: 'Errore nel salvataggio della prenotazione.' });
-                        }
-
-                        res.status(200).json({ success: true, message: 'Prenotazione effettuata con successo!' });
-                    });
-                });
-            });
+            res.status(200).json({ success: true, message: 'Prenotazione effettuata con successo!' });
         } else {
             res.status(400).json({ success: false, message: 'Stanza esaurita!' });
         }
-    });
+    } catch (err) {
+        console.error('Errore durante la prenotazione:', err);
+        res.status(500).json({ success: false, message: 'Si è verificato un errore durante la prenotazione.' });
+    }
 });
 
 app.listen(PORT, () => {
