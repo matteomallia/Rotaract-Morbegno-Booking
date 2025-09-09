@@ -29,16 +29,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
 
-            const assembleaCount = document.getElementById('assemblea-count');
-            if (assembleaCount) {
-                assembleaCount.textContent = 'Disponibilità illimitata';
-            }
-
-            const assembleaPranzoCount = document.getElementById('assemblea-pranzo-count');
-            if (assembleaPranzoCount) {
-                assembleaPranzoCount.textContent = 'Disponibilità illimitata';
-            }
-
         } catch (err) {
             console.error('Errore nel caricamento della disponibilità:', err);
         }
@@ -97,6 +87,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 e.preventDefault();
                 const formData = new FormData(bookingForm);
                 const data = Object.fromEntries(formData.entries());
+                
+                // Assicurati che il campo occupants sia un numero intero o nullo
+                if (data.occupants) {
+                    data.occupants = parseInt(data.occupants);
+                } else {
+                    data.occupants = null;
+                }
 
                 try {
                     const response = await fetch('/api/book', {
