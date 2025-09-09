@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const nodemailer = require('nodemailer');
-const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,22 +28,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware per leggere il JSON
 app.use(express.json());
 
-// Endpoint per la dashboard (può essere accessibile solo tramite API)
-app.get('/api/bookings', async (req, res) => {
-    try {
-        const { data: bookings, error } = await supabase
-            .from('bookings')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        res.json(bookings);
-    } catch (err) {
-        console.error('Errore nel recupero delle prenotazioni:', err);
-        res.status(500).send('Errore del server.');
-    }
-});
-
 // Endpoint per la prenotazione
 app.post('/api/book', async (req, res) => {
     const { roomType, name, email, phone, district, club, role, occupants } = req.body;
@@ -54,7 +37,7 @@ app.post('/api/book', async (req, res) => {
             .from('bookings')
             .insert([
                 { 
-                    event_type: roomType, // 'single-room', 'assemblea', ecc.
+                    event_type: roomType,
                     name, 
                     email, 
                     phone,
@@ -69,7 +52,7 @@ app.post('/api/book', async (req, res) => {
             throw error;
         }
 
-        // ... [Codice per l'invio dell'email, se necessario]
+        // ... [Codice per l'invio dell'email, da configurare in seguito]
 
         res.status(200).json({ message: 'Iscrizione confermata con successo!' });
 
