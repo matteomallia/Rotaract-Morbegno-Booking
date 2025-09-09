@@ -48,34 +48,31 @@ app.get('/api/bookings', async (req, res) => {
 // Endpoint per la prenotazione
 app.post('/api/book', async (req, res) => {
     const { roomType, name, email, phone, district, club, role, occupants } = req.body;
-    let room_id;
-
-    // Logica per gestire i diversi tipi di prenotazione
-    switch (roomType) {
-        case 'single-room':
-            room_id = 1;
-            break;
-        case 'double-room':
-            room_id = 2;
-            break;
-        case 'triple-room':
-            room_id = 3;
-            break;
-        case 'quadruple-room':
-            room_id = 4;
-            break;
-        case 'assemblea':
-            room_id = 5; // Un nuovo ID per l'Assemblea
-            break;
-        case 'assemblea-pranzo':
-            room_id = 6; // Un nuovo ID per Assemblea + Pranzo
-            break;
-        default:
-            return res.status(400).json({ error: 'Tipo di stanza/opzione non valido.' });
-    }
 
     try {
-        // ... [Il tuo codice per salvare la prenotazione nel database]
+        const { data, error } = await supabase
+            .from('bookings')
+            .insert([
+                { 
+                    event_type: roomType, // 'single-room', 'assemblea', ecc.
+                    name, 
+                    email, 
+                    phone,
+                    district,
+                    club,
+                    role,
+                    occupants
+                }
+            ]);
+
+        if (error) {
+            throw error;
+        }
+
+        // ... [Codice per l'invio dell'email, se necessario]
+
+        res.status(200).json({ message: 'Iscrizione confermata con successo!' });
+
     } catch (err) {
         console.error('Errore durante l\'iscrizione:', err);
         res.status(500).json({ error: 'Si è verificato un errore durante la prenotazione.' });
