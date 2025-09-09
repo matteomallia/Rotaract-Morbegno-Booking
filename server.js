@@ -37,14 +37,14 @@ app.post('/api/book', async (req, res) => {
             .from('bookings')
             .insert([
                 { 
-                    event_type: roomType,
+                    roomType, // Sostituito 'event_type' con 'roomType'
                     name, 
                     email, 
                     phone,
                     district,
                     club,
                     role,
-                    occupants: occupants || null // Gestisce il campo occupants come opzionale
+                    occupants: occupants || null
                 }
             ]);
 
