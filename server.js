@@ -1,14 +1,26 @@
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configurazione di Supabase (usa le tue chiavi)
+// Configurazione di Supabase con i tuoi dati
 const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Configurazione Nodemailer (da aggiornare con i tuoi dati)
+const transporter = nodemailer.createTransport({
+    host: "smtp.example.com", // Sostituisci con il tuo host SMTP
+    port: 587,
+    secure: false, 
+    auth: {
+        user: "tua_email@example.com", // Sostituisci con la tua email
+        pass: "tua_password" // Sostituisci con la tua password per app
+    }
+});
 
 // Middleware per servire i file statici dalla cartella 'public'
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,7 +44,7 @@ app.post('/api/book', async (req, res) => {
                     district,
                     club,
                     role,
-                    occupants
+                    occupants: occupants || null // Aggiunto il campo occupants
                 }
             ]);
 
