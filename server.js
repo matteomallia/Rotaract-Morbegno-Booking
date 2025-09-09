@@ -44,7 +44,7 @@ app.post('/api/book', async (req, res) => {
                     district,
                     club,
                     role,
-                    occupants: occupants || null // Aggiunto il campo occupants
+                    occupants: occupants || null // Gestisce il campo occupants come opzionale
                 }
             ]);
 
