@@ -43,26 +43,14 @@ app.post('/api/book', async (req, res) => {
                 }
             ]);
 
-        if (bookingError) {
-            console.error('Errore Supabase (inserimento prenotazione):', bookingError);
-            throw bookingError;
-        }
-
         // Aggiorna la disponibilità solo se non è un pacchetto con posti illimitati
         if (roomType !== 'assemblea' && roomType !== 'assemblea-pranzo') {
             const { data: availabilityData, error: availabilityError } = await supabase
                 .from('availability')
                 .update({ available_slots: supabase.sql`available_slots - ${slotsToDecrement}` })
                 .eq('room_type', roomType);
-            
-            if (availabilityError) {
-                console.error('Errore Supabase (aggiornamento disponibilità):', availabilityError);
-                throw availabilityError;
-            }
         }
         
-        // La parte dell'invio email è stata rimossa per risolvere l'errore
-
         res.status(200).json({ message: 'Iscrizione confermata con successo!' });
 
     } catch (err) {
