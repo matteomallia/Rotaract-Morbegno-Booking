@@ -1,70 +1,105 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Segreteria</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-container {
+            padding: 2rem;
+            text-align: center;
+        }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const dashboardContent = document.getElementById('dashboard-content');
+        .dashboard-content {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
 
-    const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dashboard Segreteria</h1>
+        <p>Visualizza e gestisci le prenotazioni per l'evento.</p>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="dashboard-content">
+            <h2 id="dashboard-title">Caricamento prenotazioni...</h2>
+            <div id="dashboard-content"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Rotaract Distretto 2042</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // SOSTITUISCI QUESTE RIGHE CON I TUOI DATI SUPABASE
+            const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
     const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+            const dashboardContent = document.getElementById('dashboard-content');
+            const dashboardTitle = document.getElementById('dashboard-title');
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+            try {
+                const { data: bookings, error } = await supabase
+                    .from('bookings')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-    try {
-        const { data: bookings, error } = await supabase
-            .from('bookings')
-            .select('*')
-            .order('created_at', { ascending: false }); // Ordina per data/ora di iscrizione
+                if (error) throw error;
 
-        if (error) {
-            throw error;
-        }
+                dashboardTitle.textContent = 'Elenco Prenotazioni';
 
-        if (bookings.length > 0) {
-            let tableHTML = `
-                <table id="bookings-list">
-                    <thead>
-                        <tr>
-                            <th>Data Iscrizione</th>
-                            <th>Nome e Cognome</th>
-                            <th>Email</th>
-                            <th>Telefono</th>
-                            <th>Distretto</th>
-                            <th>Club</th>
-                            <th>Ruolo</th>
-                            <th>Stanza</th>
-                            <th>Occupanti</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+                if (bookings.length > 0) {
+                    let tableHTML = '<table><thead><tr><th>Data Iscrizione</th><th>Nome e Cognome</th><th>Email</th><th>Telefono</th><th>Distretto</th><th>Club</th><th>Ruolo</th><th>Stanza/Pacchetto</th><th>Occupanti</th></tr></thead><tbody>';
+                    bookings.forEach(booking => {
+                        const bookingDate = new Date(booking.created_at).toLocaleString('it-IT');
+                        tableHTML += `
+                            <tr>
+                                <td>${bookingDate}</td>
+                                <td>${booking.name || 'N/A'}</td>
+                                <td>${booking.email || 'N/A'}</td>
+                                <td>${booking.phone || 'N/A'}</td>
+                                <td>${booking.district || 'N/A'}</td>
+                                <td>${booking.club || 'N/A'}</td>
+                                <td>${booking.role || 'N/A'}</td>
+                                <td>${booking.room_type || booking.event_type || 'N/A'}</td>
+                                <td>${booking.occupants || 'Nessuno'}</td>
+                            </tr>
+                        `;
+                    });
+                    tableHTML += '</tbody></table>';
+                    dashboardContent.innerHTML = tableHTML;
+                } else {
+                    dashboardContent.innerHTML = '<p>Nessuna prenotazione trovata.</p>';
+                }
 
-            bookings.forEach(booking => {
-                const bookingDate = new Date(booking.created_at).toLocaleString('it-IT');
-                tableHTML += `
-                    <tr>
-                        <td>${bookingDate}</td>
-                        <td>${booking.name}</td>
-                        <td>${booking.email}</td>
-                        <td>${booking.phone || 'N/A'}</td>
-                        <td>${booking.district || 'N/A'}</td>
-                        <td>${booking.club}</td>
-                        <td>${booking.role || 'N/A'}</td>
-                        <td>${booking.roomType}</td>
-                        <td>${booking.occupants || 'Nessuno'}</td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-            dashboardContent.innerHTML = tableHTML;
-        } else {
-            dashboardContent.innerHTML = '<p>Nessuna prenotazione trovata.</p>';
-        }
-
-    } catch (err) {
-        console.error('Errore nel caricamento delle prenotazioni:', err);
-        dashboardContent.innerHTML = '<p>Si è verificato un errore nel caricamento dei dati.</p>';
-    }
-});
+            } catch (err) {
+                console.error('Errore nel caricamento dei dati:', err);
+                dashboardTitle.textContent = 'Errore nel caricamento dei dati.';
+                dashboardContent.innerHTML = '<p>Si è verificato un errore nel caricamento dei dati. Assicurati che le policy di Supabase siano corrette.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
