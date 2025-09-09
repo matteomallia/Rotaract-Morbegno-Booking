@@ -1,26 +1,37 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evento Distrettuale Morbegno 2025</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header class="header">
-        <h1>Evento Distrettuale Morbegno 2025</h1>
-        <p>Scegli la tua stanza per un weekend indimenticabile!</p>
-    </header>
-
-    <div class="container">
-        <div id="availability-container">
-            </div>
+<main>
+    <div class="room-option" data-room-type="single-room">
+        <h2>Stanza Singola</h2>
+        <p>Posti disponibili: <span id="single-room-count">...</span></p>
+        <button class="book-button" data-room-type="single-room">Prenota ora</button>
+    </div>
+    
+    <div class="room-option" data-room-type="double-room">
+        <h2>Stanza Doppia</h2>
+        <p>Posti disponibili: <span id="double-room-count">...</span></p>
+        <button class="book-button" data-room-type="double-room">Prenota ora</button>
     </div>
 
-    <footer>
-        <p>© 2025 Rotaract Distretto 2042</p>
-    </footer>
+    <div class="room-option" data-room-type="triple-room">
+        <h2>Stanza Tripla</h2>
+        <p>Posti disponibili: <span id="triple-room-count">...</span></p>
+        <button class="book-button" data-room-type="triple-room">Prenota ora</button>
+    </div>
 
-    <script src="app.js"></script>
-</body>
-</html>
+    <div class="room-option" data-room-type="quadruple-room">
+        <h2>Stanza Quadrupla</h2>
+        <p>Posti disponibili: <span id="quadruple-room-count">...</span></p>
+        <button class="book-button" data-room-type="quadruple-room">Prenota ora</button>
+    </div>
+    
+    <hr> <div class="room-option" data-room-type="assemblea">
+        <h2>Partecipazione all'Assemblea</h2>
+        <p>Iscrizione solo per l'Assemblea.</p>
+        <button class="book-button" data-room-type="assemblea">Iscriviti</button>
+    </div>
+    
+    <div class="room-option" data-room-type="assemblea-pranzo">
+        <h2>Assemblea + Pranzo</h2>
+        <p>Iscrizione per l'Assemblea e il pranzo.</p>
+        <button class="book-button" data-room-type="assemblea-pranzo">Iscriviti</button>
+    </div>
+</main>
