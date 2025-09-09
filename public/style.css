@@ -1,194 +1,160 @@
-/* Stile base per il body e il container principale */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    line-height: 1.6;
 }
 
-.container {
-    max-width: 1200px; /* Aumentato il container per lo stile orizzontale */
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Stile per l'header */
-.header {
+header {
     background-color: #003366;
     color: #fff;
-    padding: 30px 20px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2rem 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.header h1 {
+header h1 {
     margin: 0;
-    font-size: 2.5em;
+    font-size: 2.5rem;
 }
 
-.header p {
-    margin: 5px 0 0;
-    font-size: 1.1em;
+header p {
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
 }
 
-/* Stile per il container della disponibilità (nuovo stile orizzontale) */
-#availability-container {
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Spazio tra gli elementi */
-    justify-content: center; /* Centra gli elementi orizzontalmente */
+    gap: 2rem;
+    justify-content: center;
 }
 
-.room {
+.room-option {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 20px;
+    padding: 2rem;
     text-align: center;
-    width: 250px; /* Larghezza fissa per ogni elemento */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-basis: calc(50% - 1rem);
+    transition: transform 0.3s ease;
 }
 
-.room:hover {
+.room-option:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.room.sold-out {
-    opacity: 0.6;
-    background-color: #f8f9fa;
-    border-color: #e9ecef;
-}
-
-.room h3 {
+.room-option h2 {
     color: #003366;
     margin-top: 0;
-    font-size: 1.5em;
 }
 
-.room p {
-    color: #666;
-    font-size: 1em;
-}
-
-/* Stile per i moduli e gli elementi di prenotazione */
-.booking-form-container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.booking-form-container h3 {
-    text-align: center;
-    color: #003366;
-    margin-bottom: 25px;
-    font-size: 1.8em;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
+.room-option p {
     color: #555;
+    font-size: 1rem;
 }
 
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="tel"],
-.form-group select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 1em;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
-}
-
-.form-group p {
-    background-color: #fff3cd;
-    color: #856404;
-    padding: 15px;
-    border: 1px solid #ffeeba;
-    border-radius: 5px;
-}
-
-/* Stile per i bottoni */
-.btn {
-    display: inline-block;
-    width: 100%;
-    padding: 15px;
-    font-size: 1.2em;
-    font-weight: bold;
+.book-button {
+    background-color: #ff9900;
     color: #fff;
-    background-color: #ff8c00;
     border: none;
-    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
     cursor: pointer;
+    border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
-.btn:hover {
-    background-color: #e57e00;
+.book-button:hover {
+    background-color: #e68a00;
 }
 
-/* Stile per la pagina di riepilogo */
-.summary-container {
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
+hr {
+    width: 100%;
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 2rem 0;
 }
 
-.summary-container h1 {
-    color: #28a745;
-    font-size: 2.5em;
-    margin-bottom: 20px;
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    padding-top: 60px;
 }
 
-.summary-container p {
-    font-size: 1.1em;
-    line-height: 1.6;
-    margin-bottom: 25px;
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
 }
 
-.summary-container strong {
-    color: #003366;
-}
-
-.summary-container .warning {
-    color: #dc3545;
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
     font-weight: bold;
 }
 
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+#booking-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#booking-form input,
+#booking-form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+#submit-button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+}
+
+/* FOOTER */
 footer {
     text-align: center;
-    padding: 20px;
+    padding: 1rem 0;
     background-color: #003366;
     color: #fff;
-    margin-top: auto;
+    position: relative;
+    bottom: 0;
+    width: 100%;
 }
