@@ -4,23 +4,12 @@ const { createClient } = require('@supabase/supabase-js');
 const nodemailer = require('nodemailer');
 
 const app = express();
-const PORT = process.env.env || 3000;
+const PORT = process.env.PORT || 3000;
 
-// Configurazione di Supabase con i tuoi dati
+// Configurazione di Supabase
 const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Configurazione Nodemailer (da aggiornare con i tuoi dati)
-const transporter = nodemailer.createTransport({
-    host: "smtp.example.com", 
-    port: 587,
-    secure: false, 
-    auth: {
-        user: "tua_email@example.com", 
-        pass: "tua_password"
-    }
-});
 
 // Middleware per servire i file statici dalla cartella 'public'
 app.use(express.static(path.join(__dirname, 'public')));
@@ -38,6 +27,7 @@ app.post('/api/book', async (req, res) => {
     }
 
     try {
+        // Inserisci la prenotazione nella tabella 'bookings'
         const { data: bookingData, error: bookingError } = await supabase
             .from('bookings')
             .insert([
@@ -58,6 +48,7 @@ app.post('/api/book', async (req, res) => {
             throw bookingError;
         }
 
+        // Aggiorna la disponibilità solo se non è un pacchetto con posti illimitati
         if (roomType !== 'assemblea' && roomType !== 'assemblea-pranzo') {
             const { data: availabilityData, error: availabilityError } = await supabase
                 .from('availability')
@@ -69,6 +60,8 @@ app.post('/api/book', async (req, res) => {
                 throw availabilityError;
             }
         }
+        
+        // La parte dell'invio email è stata rimossa per risolvere l'errore
 
         res.status(200).json({ message: 'Iscrizione confermata con successo!' });
 
