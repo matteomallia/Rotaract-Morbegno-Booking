@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 // Configurazione di Supabase con i tuoi dati
 const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2ihIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Configurazione Nodemailer (da aggiornare con i tuoi dati)
@@ -32,12 +32,19 @@ app.use(express.json());
 app.post('/api/book', async (req, res) => {
     const { roomType, name, email, phone, district, club, role, occupants } = req.body;
 
+    // Per le camere, il numero di slot da decrementare è il numero di occupanti
+    let slotsToDecrement = occupants;
+    if (roomType === 'assemblea' || roomType === 'assemblea-pranzo') {
+      // Per i pacchetti "assemblea", il numero di slot è 1
+      slotsToDecrement = 1;
+    }
+
     try {
-        const { data, error } = await supabase
+        const { data: bookingData, error: bookingError } = await supabase
             .from('bookings')
             .insert([
                 { 
-                    roomType, // Sostituito 'event_type' con 'roomType'
+                    roomType, 
                     name, 
                     email, 
                     phone,
@@ -48,9 +55,22 @@ app.post('/api/book', async (req, res) => {
                 }
             ]);
 
-        if (error) {
-            console.error('Errore Supabase:', error);
-            throw error;
+        if (bookingError) {
+            console.error('Errore Supabase (inserimento prenotazione):', bookingError);
+            throw bookingError;
+        }
+
+        // Aggiorna la disponibilità solo se non è un pacchetto con posti illimitati
+        if (roomType !== 'assemblea' && roomType !== 'assemblea-pranzo') {
+            const { data: availabilityData, error: availabilityError } = await supabase
+                .from('availability')
+                .update({ available_slots: supabase.sql`available_slots - ${slotsToDecrement}` })
+                .eq('room_type', roomType);
+            
+            if (availabilityError) {
+                console.error('Errore Supabase (aggiornamento disponibilità):', availabilityError);
+                throw availabilityError;
+            }
         }
 
         res.status(200).json({ message: 'Iscrizione confermata con successo!' });
