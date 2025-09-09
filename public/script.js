@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 });
             }
-
         } catch (err) {
             console.error('Errore nel caricamento della disponibilità:', err);
         }
@@ -87,11 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 e.preventDefault();
                 const formData = new FormData(bookingForm);
                 const data = Object.fromEntries(formData.entries());
-                
-                // Assicurati che il campo occupants sia un numero intero o nullo
-                if (data.occupants) {
-                    data.occupants = parseInt(data.occupants);
-                } else {
+
+                // Il campo occupants viene gestito come una stringa
+                if (!data.occupants) {
                     data.occupants = null;
                 }
 
