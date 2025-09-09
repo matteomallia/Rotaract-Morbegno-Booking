@@ -27,6 +27,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 });
             }
+
+            // Imposta un testo fisso per i pacchetti che non hanno un conteggio
+            const assembleaCount = document.getElementById('assemblea-count');
+            if (assembleaCount) {
+                assembleaCount.textContent = 'Disponibilità illimitata';
+            }
+
+            const assembleaPranzoCount = document.getElementById('assemblea-pranzo-count');
+            if (assembleaPranzoCount) {
+                assembleaPranzoCount.textContent = 'Disponibilità illimitata';
+            }
+
         } catch (err) {
             console.error('Errore nel caricamento della disponibilità:', err);
         }
@@ -41,7 +53,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             let roomName;
             let formHTML;
 
-            // Logica per determinare il nome della stanza e il modulo da visualizzare
             switch (roomType) {
                 case 'single-room':
                     roomName = 'Stanza Singola';
@@ -82,7 +93,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             bookingModal.style.display = 'block';
 
-            // Gestione dell'invio del modulo
             const bookingForm = document.getElementById('booking-form');
             bookingForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -122,7 +132,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Moduli HTML per le prenotazioni
     function getRoomBookingForm() {
         return `
             <label for="name">Nome e Cognome:</label>
