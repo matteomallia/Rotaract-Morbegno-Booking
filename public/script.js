@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // DATI SUPABASE CORRETTI
     const supabaseUrl = 'https://ncukukeoiflpemjucgih.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jdWt1a2VvaWZscGVtanVjZ2ihIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzIyMTIsImV4cCI6MjA3MDc0ODIxMn0.oSoNqmj2I-_lZ331UTnX8u1TJ1scNOWAKyV1Jkzgesg';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
     const bookingModal = document.getElementById('booking-modal');
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function getRoomBookingForm() {
         return `
-            <label for="name">Nome e Cognome:</label>
+            <label for="name">Nome e Cognome (capogruppo):</label>
             <input type="text" id="name" name="name" required>
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
@@ -143,8 +143,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <option value="Socio Onorario">Socio Onorario</option>
                 <option value="Ospite">Ospite</option>
             </select>
-            <label for="occupants">Numero di Occupanti:</label>
-            <input type="number" id="occupants" name="occupants" min="1" required>
+            <label for="occupants">Nomi degli Occupanti (separati da virgola):</label>
+            <input type="text" id="occupants" name="occupants" required>
         `;
     }
 

@@ -21,9 +21,12 @@ app.use(express.json());
 app.post('/api/book', async (req, res) => {
     const { roomType, name, email, phone, district, club, role, occupants } = req.body;
 
-    let slotsToDecrement = occupants;
+    let slotsToDecrement;
     if (roomType === 'assemblea' || roomType === 'assemblea-pranzo') {
-      slotsToDecrement = 1;
+        slotsToDecrement = 1;
+    } else {
+        // Calcola il numero di occupanti dalla stringa di nomi
+        slotsToDecrement = occupants.split(',').length;
     }
 
     try {
@@ -39,7 +42,7 @@ app.post('/api/book', async (req, res) => {
                     district,
                     club,
                     role,
-                    occupants: occupants || null
+                    occupants
                 }
             ]);
 
@@ -50,7 +53,7 @@ app.post('/api/book', async (req, res) => {
                 .update({ available_slots: supabase.sql`available_slots - ${slotsToDecrement}` })
                 .eq('room_type', roomType);
         }
-        
+
         res.status(200).json({ message: 'Iscrizione confermata con successo!' });
 
     } catch (err) {
