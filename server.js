@@ -47,13 +47,12 @@ app.post('/api/book', async (req, res) => {
 
         // Aggiorna la disponibilità solo se non è un pacchetto con posti illimitati
         if (roomType !== 'assemblea' && roomType !== 'assemblea-pranzo') {
-            await supabase
+             await supabase
                 .from('availability')
                 .update({ available_slots: supabase.sql`available_slots - ${slotsToDecrement}` })
                 .eq('room_type', roomType);
         }
         
-        // Invia una risposta di successo al client
         res.status(200).json({ message: 'Iscrizione confermata con successo!' });
 
     } catch (err) {
