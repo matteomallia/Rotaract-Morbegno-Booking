@@ -24,8 +24,13 @@ app.post('/api/book', async (req, res) => {
     if (roomType === 'assemblea' || roomType === 'assemblea-pranzo') {
         slotsToDecrement = 1;
     } else {
-        // Calcola il numero di occupanti dalla stringa di nomi
-        slotsToDecrement = occupants.split(',').length;
+        // Gestisce il caso in cui occupants non sia una stringa con virgole
+        if (occupants && typeof occupants === 'string' && occupants.includes(',')) {
+            slotsToDecrement = occupants.split(',').length;
+        } else {
+            // Se occupants è un nome singolo, considera 1
+            slotsToDecrement = 1;
+        }
     }
 
     try {
